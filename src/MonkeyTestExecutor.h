@@ -18,15 +18,14 @@ class MonkeyTestExecutor : public QObject
     Q_OBJECT
 public:
     explicit MonkeyTestExecutor(QObject *parent = 0);
-
+signals:
+    void sigClickTriggered(QPoint globalPos);
 public slots:
     void startMonkeyTest(const MonkeyTestTask& task);
     void stopMonkeyTest();
 
 private:
     void triggerClick();
-    void mouseMoveTo(int toX, int toY);
-    void mouseLeftClick();
 private:
     QTimer timer_;
     QThread *execThread_;

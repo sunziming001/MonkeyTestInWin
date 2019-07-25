@@ -39,6 +39,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void onClickedTriggered(QPoint globalPos);
+
 private:
     bool startHook();
     bool stopHook();
@@ -50,8 +52,8 @@ private:
     MonkeyTestExecutor *monkeyTestExecutor_;
     CaptureFrame *captureFrame_;
 
-    HHOOK glhHook;         //安装的鼠标勾子句柄
-    HINSTANCE glhInstance; //DLL实例句柄
+    HHOOK glhHook;
+    HINSTANCE glhInstance;
 };
 
 #endif // MAINWINDOW_H

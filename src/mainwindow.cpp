@@ -53,9 +53,17 @@ MainWindow::MainWindow(QWidget *parent) :
             , &MonkeyTestExecutor::startMonkeyTest
             , Qt::QueuedConnection);
 
+    connect(monkeyTestExecutor_
+            , &MonkeyTestExecutor::sigClickTriggered
+            , this
+            , &MainWindow::onClickedTriggered
+            , Qt::QueuedConnection);
+
     connect(captureFrame_, &CaptureFrame::sigAreaCaptured,this,&MainWindow::onAreaCaptured);
     connect(ui->sp_sep, SIGNAL(valueChanged(int)),this,SLOT(onSepValChanged(int)));
     connect(ui->sp_dur, SIGNAL(valueChanged(int)),this,SLOT(onDurValChanged(int)));
+
+
 
     startHook();
 }
@@ -69,7 +77,6 @@ bool MainWindow::startHook()
     glhHook=SetWindowsHookEx(WH_KEYBOARD_LL, hookproc, 0, 0);
     if(glhHook)
         bResult = true;
-    qDebug()<<"startHook: "<<bResult;
     return bResult;
 }
 
@@ -100,9 +107,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btn_start_clicked()
 {
-
-    //testTask_.sepMsecs = 2000;
-    //testTask_.testMsecs = 8000;
     emit startTest(testTask_);
 }
 
@@ -123,8 +127,7 @@ void MainWindow::on_btn_stop_clicked()
 
 void MainWindow::on_btn_setArea_clicked()
 {
-    captureFrame_->clearArea();
-    captureFrame_->show();
+    captureFrame_->startCapture();
 }
 
 void MainWindow::onAreaCaptured(QRect area )
@@ -133,6 +136,12 @@ void MainWindow::onAreaCaptured(QRect area )
     QString format="area: (%1,%2,%3x%4)";
     QString text = format.arg(area.x()).arg(area.y()).arg(area.width()).arg(area.height());
     ui->lb_area->setText(text);
+    captureFrame_->startDisplay();
+}
+
+void MainWindow::onClickedTriggered(QPoint globalPos)
+{
+    captureFrame_->appendClickedPos(globalPos);
 }
 
 void MainWindow::on_pushButton_clicked()
